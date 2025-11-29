@@ -1,0 +1,16 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 3333
+    },
+    "ui": {
+      "enabled": true,
+      "port": 3334
+    },
+    "singleProjectMode": true
+  }
+}

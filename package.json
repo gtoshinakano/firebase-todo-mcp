@@ -1,0 +1,33 @@
+{
+  "name": "firestore-todo-mcp",
+  "version": "0.1.0",
+  "bin": {
+    "firestore-todo-mcp": "./dist/bin/index.js"
+  },
+  "scripts": {
+    "dev:mcp": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/bin/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "@cfworker/json-schema": "^4.1.1",
+    "@modelcontextprotocol/sdk": "^1.23.0",
+    "dotenv": "^17.2.3",
+    "firebase-admin": "^13.6.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "^0.17.2",
+    "@types/node": "^24.10.1",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
