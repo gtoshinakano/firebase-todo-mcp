@@ -1,6 +1,6 @@
 {
   "name": "firestore-todo-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "bin": {
     "firestore-todo-mcp": "./dist/bin/index.js"
   },
