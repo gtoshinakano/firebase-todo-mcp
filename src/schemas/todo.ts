@@ -19,6 +19,10 @@ export const todoBaseFields = {
     .default("user")
     .describe("User defined role of the person who has to do this todo or task"),
   completionNotes: z.string().optional().nullable().describe("Optional Completion notes. Only set when marking as completed"),
+  classification: z
+    .enum(["circumstantial", "urgent", "important"])
+    .default("important")
+    .describe("Must be provided at the time of task creation based on the nature of the task"),
 };
 
 

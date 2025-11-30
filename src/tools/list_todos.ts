@@ -61,6 +61,7 @@ export async function listTodosService(params: z.infer<z.ZodObject<typeof listTo
       updatedAt: String(data.updatedAt ?? nowIso),
       dueDate: data.dueDate ? String(data.dueDate) : null,
       role: data.role ? String(data.role) : "user",
+      classification: data.classification ? String(data.classification) as "circumstantial" | "urgent" | "important" : "important",
     } satisfies Todo;
   });
 

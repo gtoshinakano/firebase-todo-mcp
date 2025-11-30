@@ -25,6 +25,11 @@ export const updateTodoInputSchema = {
     .string()
     .optional()
     .describe("New role (if updating). Cannot be empty string"),
+  classification: z
+    .enum(["circumstantial", "urgent", "important"])
+    .optional()
+    .default("important")
+    .describe("Must be provided at the time of task creation based on the nature of the task"),
 };
 
 export async function updateTodoService(params: z.infer<z.ZodObject<typeof updateTodoInputSchema>>): Promise<SingleTodoResult> {
@@ -65,6 +70,7 @@ export async function updateTodoService(params: z.infer<z.ZodObject<typeof updat
     completionNotes: data.completionNotes ? String(data.completionNotes) : "",
     dueDate: data.dueDate ? String(data.dueDate) : null,
     role: data.role ? String(data.role) : "user",
+    classification: data.classification ? String(data.classification) as "circumstantial" | "urgent" | "important" : "important",
   } satisfies Todo;
 
   return {

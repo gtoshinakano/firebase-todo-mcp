@@ -18,6 +18,14 @@ export const createTodoInputSchema = {
   role: z
     .string()
     .describe("User defined role of the person who has to do this todo or task"),
+  classification: z
+    .enum(["circumstantial", "urgent", "important"])
+    .default("important")
+    .describe(`Required. Determined based on the nature of the task:
+      - circumstantial: tasks that arise due to specific situations or events and has low or none aggregating value
+      - urgent: tasks that require immediate attention
+      - important: tasks that are significant and brings value to life, work or goals
+    `),
 };
 
 export const singleTodoOutputSchema = {
@@ -40,6 +48,7 @@ export async function createTodoService(params: z.infer<z.ZodObject<typeof creat
     updatedAt: nowIso,
     dueDate: params.dueDate ?? null,
     role: params.role,
+    classification: params.classification,
   };
 
   const ref = await db.collection(process.env.FIRESTORE_COLLECTION || "test").add(docData);
