@@ -5,7 +5,7 @@ import {
   ListTodosResult,
   listTodosService,
 } from "./list_todos.js";
-import { addTodoInputSchema, addTodoService } from "./create_todo.js";
+import { createTodoInputSchema, createTodoService } from "./create_todo.js";
 import {
   deleteTodoInputSchema,
   deleteTodoOutputSchema,
@@ -28,7 +28,6 @@ function buildStructuredResult<T extends object>(
 } {
   return {
     structuredContent: data,
-    // Also return JSON string for backwards compatibility / human inspection
     content: [
       {
         type: "text",
@@ -44,18 +43,17 @@ export function registerTodoTools(server: McpServer) {
   server.registerTool(
     "list_todos",
     {
-      title: "List todos",
+      title: "List todos/tasks",
       description:
-        "List todo items from the user's Firestore 'todos' collection with optional filters.",
+        "List todo items from the user's 'todos' store with optional filters.",
       inputSchema: listTodosInputSchema,
       outputSchema: listTodosOutputSchema,
     },
-    async ({
-      completed,
-      limit,
-    }): Promise<ReturnType<typeof buildStructuredResult<ListTodosResult>>> => {
+    async (
+      params
+    ): Promise<ReturnType<typeof buildStructuredResult<ListTodosResult>>> => {
       try {
-        const result = await listTodosService({ completed, limit });
+        const result = await listTodosService(params);
         return buildStructuredResult<ListTodosResult>(result);
       } catch (err) {
         return {
@@ -76,29 +74,20 @@ export function registerTodoTools(server: McpServer) {
     }
   );
 
-  // 2) add_todo
+  // 2) create_todo
   server.registerTool(
-    "add_todo",
+    "create_todo",
     {
-      title: "Add todo",
-      description:
-        "Add a new todo item to the user's Firestore 'todos' collection.",
-      inputSchema: addTodoInputSchema,
+      title: "Create todo/task",
+      description: "Add a new todo/task item to the user's store",
+      inputSchema: createTodoInputSchema,
       outputSchema: singleTodoOutputSchema,
     },
-    async ({
-      text,
-      completed,
-      dueDate,
-      tags,
-    }): Promise<ReturnType<typeof buildStructuredResult<SingleTodoResult>>> => {
+    async (
+      params
+    ): Promise<ReturnType<typeof buildStructuredResult<SingleTodoResult>>> => {
       try {
-        const result = await addTodoService({
-          text,
-          completed,
-          dueDate,
-          tags,
-        });
+        const result = await createTodoService(params);
         return buildStructuredResult<SingleTodoResult>(result);
       } catch (err) {
         return {
@@ -110,7 +99,7 @@ export function registerTodoTools(server: McpServer) {
               completed: false,
               createdAt: "",
               updatedAt: "",
-              tags: [],
+              role: [],
             },
           } as unknown as SingleTodoResult,
           content: [
@@ -131,38 +120,28 @@ export function registerTodoTools(server: McpServer) {
   server.registerTool(
     "update_todo",
     {
-      title: "Update todo",
+      title: "Update todo/task",
       description:
-        "Update fields of an existing todo item (text, completed, dueDate, tags).",
+        "Update fields of an existing todo item (text, completed, dueDate, role).",
       inputSchema: updateTodoInputSchema,
       outputSchema: singleTodoOutputSchema,
     },
-    async ({
-      id,
-      text,
-      completed,
-      dueDate,
-      tags,
-    }): Promise<ReturnType<typeof buildStructuredResult<SingleTodoResult>>> => {
+    async (
+      params
+    ): Promise<ReturnType<typeof buildStructuredResult<SingleTodoResult>>> => {
       try {
-        const result = await updateTodoService({
-          id,
-          text,
-          completed,
-          dueDate,
-          tags,
-        });
+        const result = await updateTodoService(params);
         return buildStructuredResult<SingleTodoResult>(result);
       } catch (err) {
         return {
           structuredContent: {
             todo: {
-              id,
+              id: params.id,
               text: "",
               completed: false,
               createdAt: "",
               updatedAt: "",
-              tags: [],
+              role: "",
             },
           } as unknown as SingleTodoResult,
           content: [
@@ -183,7 +162,7 @@ export function registerTodoTools(server: McpServer) {
   server.registerTool(
     "delete_todo",
     {
-      title: "Delete todo",
+      title: "Delete todo/task",
       description:
         "Delete a todo item from the user's Firestore 'todos' collection by id.",
       inputSchema: deleteTodoInputSchema,

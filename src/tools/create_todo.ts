@@ -1,48 +1,45 @@
 import { z } from "zod";
 import { Todo } from "../schemas/types.js";
 import { getFirestore } from "../lib/firestore.js";
-import { todoFields } from "../schemas/business.js";
+import { todoFields } from "../schemas/todo.js";
 
-export const addTodoInputSchema = {
-  text: z.string().describe("Todo text to add."),
+export const createTodoInputSchema = {
+  title: z.string().describe("Todo/Task text to add"),
+  details: z.string().optional().describe("Optional. Todo/Task description with details. Max 20 words"),
   completed: z
     .boolean()
     .optional()
-    .describe("Initial completed status. Default false."),
+    .describe("Initial completed status. Default false"),
   dueDate: z
     .string()
     .optional()
-    .describe("Optional ISO 8601 due date."),
-  tags: z
-    .array(z.string())
-    .optional()
-    .describe("Optional list of tags/labels for this todo."),
+    .nullable()
+    .describe("Optional ISO 8601 due date"),
+  role: z
+    .string()
+    .describe("User defined role of the person who has to do this todo or task"),
 };
 
 export const singleTodoOutputSchema = {
-  todo: z.object(todoFields).describe("The affected todo item."),
+  todo: z.object(todoFields).describe("The affected todo item"),
 };
 
 export type SingleTodoResult = z.infer<
   z.ZodObject<typeof singleTodoOutputSchema>
 >;
 
-export async function addTodoService(params: {
-  text: string;
-  completed?: boolean;
-  dueDate?: string;
-  tags?: string[];
-}): Promise<SingleTodoResult> {
+export async function createTodoService(params: z.infer<z.ZodObject<typeof createTodoInputSchema>>): Promise<SingleTodoResult> {
   const db = getFirestore();
   const nowIso = new Date().toISOString();
 
   const docData = {
-    text: params.text,
+    title: params.title,
+    details: params.details ?? "",
     completed: params.completed ?? false,
     createdAt: nowIso,
     updatedAt: nowIso,
-    dueDate: params.dueDate,
-    tags: params.tags ?? [],
+    dueDate: params.dueDate ?? null,
+    role: params.role,
   };
 
   const ref = await db.collection(process.env.FIRESTORE_COLLECTION || "test").add(docData);

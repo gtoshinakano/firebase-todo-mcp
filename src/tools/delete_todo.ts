@@ -2,11 +2,11 @@ import { z } from "zod";
 import { getFirestore } from "../lib/firestore.js";
 
 export const deleteTodoInputSchema = {
-  id: z.string().describe("ID of the todo to delete."),
+  id: z.string().describe("ID of the todo to delete"),
 };
 
 export const deleteTodoOutputSchema = {
-  deletedId: z.string().describe("ID of the deleted todo item."),
+  deletedId: z.string().describe("ID of the deleted todo item"),
 };
 
 export type DeleteTodoResult = z.infer<
