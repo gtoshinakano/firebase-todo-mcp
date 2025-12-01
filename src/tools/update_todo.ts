@@ -19,6 +19,10 @@ export const updateTodoInputSchema = {
     .boolean()
     .optional()
     .describe("New completed status (if updating)"),
+  archived: z
+    .boolean()
+    .optional()
+    .describe("New archived status (if updating)"),
   dueDate: z.string().optional().nullable().describe("New due date (if updating)"),
   completionNotes: z.string().optional().nullable().describe("Completion notes (if provided). Only update when marking as completed."),
   role: z
@@ -46,6 +50,8 @@ export async function updateTodoService(params: z.infer<z.ZodObject<typeof updat
   if (typeof params.dueDate !== "undefined") updates.dueDate = params.dueDate;
   if (typeof params.completionNotes !== "undefined") updates.completionNotes = params.completionNotes;
   if (typeof params.role !== "undefined") updates.role = params.role;
+  if (typeof params.archived !== "undefined") updates.archived = params.archived;
+  if (typeof params.classification !== "undefined") updates.classification = params.classification;
 
   if (Object.keys(updates).length === 1) {
     // Only updatedAt set → nothing to change
