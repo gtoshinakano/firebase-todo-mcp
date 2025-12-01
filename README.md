@@ -81,7 +81,9 @@ npx @modelcontextprotocol/inspector \
 }
 ```
 #### 5. Create a project with a system prompt from the example
-Copy the contents of the system prompt from the path `examples/system.md`
+Copy the contents of the system prompts from the path `example/`
+`complete`: More effective, but token expensive
+`short`: Shorter version for saving tokens. Works fine but less accurate
 
 #### 6. Have fun with your new Task Manager ;)
 Try chat like:
