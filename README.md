@@ -1,7 +1,7 @@
 # Firestore Todo List MCP Server
 Connect any MCP Client like Claude, Open-WebUI and others to this MCP server to manage todos via AI chat in an opinionated way.
 
-You can simply tell the model to `create_todo`, `list_todos`, `update_todo` and `delete_todo`
+You can simply tell the model to `create_todo`, `list_todos`, `update_todo`, 'complete_todo' and `delete_todo`
 
 You can setup a custom system prompt as well to get customized answers.
 
@@ -40,7 +40,7 @@ Don't forget to setup your project on Firebase and to get the Firebase serviceAc
 
 The file content must be 'base64' encoded when passing the value to the json above.
 
-### Development Mode
+## Development Mode
 
 #### 1. Clone the repo
 ```bash
@@ -80,8 +80,10 @@ npx @modelcontextprotocol/inspector \
     }
 }
 ```
+#### 5. Create a project with a system prompt from the example
+Copy the contents of the system prompt from the path `examples/system.md`
 
-#### 5. Have fun with your new Task Manager ;)
+#### 6. Have fun with your new Task Manager ;)
 Try chat like:
 `Add the task XYZ. Due date tomorrow.`
 

@@ -71,6 +71,7 @@ export async function updateTodoService(params: z.infer<z.ZodObject<typeof updat
     dueDate: data.dueDate ? String(data.dueDate) : null,
     role: data.role ? String(data.role) : "user",
     classification: data.classification ? String(data.classification) as "circumstantial" | "urgent" | "important" : "important",
+    archived: Boolean(data.archived ?? false),
   } satisfies Todo;
 
   return {

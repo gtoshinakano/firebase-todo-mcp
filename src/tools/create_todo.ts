@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Todo } from "../schemas/types.js";
 import { getFirestore } from "../lib/firestore.js";
 import { todoFields } from "../schemas/todo.js";
+import { arch } from "os";
 
 export const createTodoInputSchema = {
   title: z.string().describe("Todo/Task text to add"),
@@ -49,6 +50,7 @@ export async function createTodoService(params: z.infer<z.ZodObject<typeof creat
     dueDate: params.dueDate ?? null,
     role: params.role,
     classification: params.classification,
+    archived: false,
   };
 
   const ref = await db.collection(process.env.FIRESTORE_COLLECTION || "test").add(docData);

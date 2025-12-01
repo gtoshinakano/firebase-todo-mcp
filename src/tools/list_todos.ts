@@ -8,6 +8,18 @@ export const listTodosInputSchema = {
     .boolean()
     .optional()
     .describe("If set, filter todos by completion status"),
+  archived: z
+    .boolean()
+    .optional()
+    .describe("If set, filter todos by archived status"),
+  from: z
+    .string()
+    .optional()
+    .describe("Optional ISO 8601 date. If set, filter todos from this date (inclusive) based on createdAt"),
+  to: z
+    .string()
+    .optional()
+    .describe("Optional ISO 8601 date. If set, filter todos to this date (inclusive) based on updatedAt"),
   role: z
     .string()
     .optional()
@@ -41,8 +53,20 @@ export async function listTodosService(params: z.infer<z.ZodObject<typeof listTo
     query = query.where("completed", "==", params.completed);
   }
 
+  if (typeof params.archived === "boolean") {
+    query = query.where("archived", "==", params.archived);
+  }
+
   if (typeof params.role === "string") {
     query = query.where("role", "==", params.role);
+  }
+
+  if (typeof params.from === "string") {
+    query = query.where("createdAt", ">=", params.from);
+  }
+  
+  if (typeof params.to === "string") {
+    query = query.where("updatedAt", "<=", params.to);
   }
 
   query = query.orderBy("createdAt", "asc").limit(limit);
@@ -62,6 +86,7 @@ export async function listTodosService(params: z.infer<z.ZodObject<typeof listTo
       dueDate: data.dueDate ? String(data.dueDate) : null,
       role: data.role ? String(data.role) : "user",
       classification: data.classification ? String(data.classification) as "circumstantial" | "urgent" | "important" : "important",
+      archived: Boolean(data.archived ?? false),
     } satisfies Todo;
   });
 

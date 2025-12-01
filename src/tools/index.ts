@@ -18,6 +18,7 @@ import {
   updateTodoInputSchema,
   updateTodoService,
 } from "./update_todo.js";
+import { completeTodoInputSchema, completeTodoOutputSchema, completeTodoService } from "./complete_todo.js";
 
 function buildStructuredResult<T extends object>(
   data: T
@@ -131,6 +132,47 @@ export function registerTodoTools(server: McpServer) {
     ): Promise<ReturnType<typeof buildStructuredResult<SingleTodoResult>>> => {
       try {
         const result = await updateTodoService(params);
+        return buildStructuredResult<SingleTodoResult>(result);
+      } catch (err) {
+        return {
+          structuredContent: {
+            todo: {
+              id: params.id,
+              text: "",
+              completed: false,
+              createdAt: "",
+              updatedAt: "",
+              role: "",
+            },
+          } as unknown as SingleTodoResult,
+          content: [
+            {
+              type: "text",
+              text: `Error updating todo: ${
+                err instanceof Error ? err.message : String(err)
+              }`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  server.registerTool(
+    "complete_todo",
+    {
+      title: "Complete todo/task",
+      description:
+        "Mark an existing todo item as completed.",
+      inputSchema: completeTodoInputSchema,
+      outputSchema: completeTodoOutputSchema,
+    },
+    async (
+      params
+    ): Promise<ReturnType<typeof buildStructuredResult<SingleTodoResult>>> => {
+      try {
+        const result = await completeTodoService(params);
         return buildStructuredResult<SingleTodoResult>(result);
       } catch (err) {
         return {
